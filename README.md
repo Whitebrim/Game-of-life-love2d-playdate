@@ -1,18 +1,20 @@
 # Game of Life
 
 Controls:
-* N - new world
-* S - next step
-* P - switch autoplay
-* D - switch playdate view
-* 1-5 - scale (if not in playdate view)
-* A - switch screen clear after each frame
+* **N** - new world
+* **S** - next step
+* **P** - switch autoplay
+* **D** - switch playdate view
+* **1-5** - scale (if not in playdate view)
+* **A** - switch screen clear after each frame
+
+![Preview](preview.png)
+
+
 
 # [playdate-emulation](https://github.com/cadin/love-playdate-emulation)
 
 A basic template for previewing games built with [LÖVE](https://love2d.org) in a [Playdate](https://play.date)-like environment.
-
-![Preview](preview.png)
 
 This template creates an environment for running LÖVE games in a way that resembles how they might appear on the upcoming Playdate console. It creates a [Canvas](https://love2d.org/wiki/Canvas) on which to build your game, already set up as a 400x240 1-bit aliased grayscale environment. The Canvas runs a shader that converts all images to grey-on-grey. This way you can prepare black and white images for an actual Playdate game, and have them display here similar to how they might appear on device.
 
