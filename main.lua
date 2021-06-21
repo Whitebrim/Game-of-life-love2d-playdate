@@ -1,13 +1,14 @@
 require("playdate-env")
 require("game")
 
-local SCALE = 4
-local useDevice = false
+local SCALE = 2
+local useDevice = true
 
 local canvas
 
 
 function love.load()
+	love.window.setVSync(0)
 	setPlaydateWindow(useDevice, SCALE)
 	canvas = createPlaydateCanvas(WHITE)
 	loadGame(canvas)
