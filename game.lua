@@ -4,77 +4,65 @@ local height = 240
 local width = 400
 local threshold = 0.5
 
-function getCell(x, y)
-	if (x == -1) then
-		x = width - 1
+local function checkCellNeighbours(x, y)
+	local left = (x - 1) % width
+	local right = (x + 1) % width
+	local up = (y - 1) % height
+	local down = (y + 1) % height
+	local aliveAmount = world[left + up * width] +
+						world[x + up * width] +
+						world[right + up * width] +
+						world[left + y * width] +
+						world[right + y * width] +
+						world[left + down * width] +
+						world[x + down * width] +
+						world[right + down * width]
+
+	if aliveAmount == 2 then
+		return world[x + y * width]
 	end
-	if (x == width) then
-		x = 0
+	if aliveAmount == 3 then
+		return 1
+	else
+		return 0
 	end
-	if (y == -1) then
-		y = height - 1
-	end
-	if (y == height) then
-		y = 0
-	end
-	return world[x][y]
 end
 
-function checkCellNeighbours(x, y)
-	local aliveAmount = 0
-
-	for	i = -1, 1 do
-		for j = -1, 1 do
-			if not(i == 0 and j == 0) and getCell(x + i, y + j) then
-				aliveAmount = aliveAmount + 1
-			end
-		end
-	end
-
-	if (aliveAmount == 2 and world[x][y]) then
-		return true
-	end
-	return aliveAmount == 3
-end
-
-function nextStep()
-	local nextWorld = {}
-	for x = 0, width - 1 do
-		nextWorld[x] = {}
-		for y = 0, height - 1 do
-			nextWorld[x][y] = checkCellNeighbours(x, y)
-		end
-	end
-	world = nextWorld
-end
-
-function drawTable()
+local function nextStep()
 	for x = 0, width - 1 do
 		for y = 0, height - 1 do
-			if (world[x][y]) then
+			nextWorld[x + y * width] = checkCellNeighbours(x, y)
+		end
+	end
+	world, nextWorld = nextWorld, world
+end
+
+local function drawTable()
+	for x = 0, width - 1 do
+		for y = 0, height - 1 do
+			if (world[x + y * width] == 1) then
 				love.graphics.points(x, y)
 			end
 		end
 	end
 end
 
-function newWorld()
+local function newWorld()
 	world = {}
+	nextWorld = {}
 	for x = 0, width - 1 do
-		world[x] = {}
 		for	y = 0, height - 1 do
-			world[x][y] = love.math.random() > threshold
+			world[x + y * width] = math.random(2) - 1 -- Рандом 0 или 1
 		end
 	end
 end
 
 function loadGame()
-	currentFrame = 1
+	math.randomseed (os.time()) -- Сид для рандома, возможно у playdate sdk есть свой рандом
 	newWorld()
 end
 
-function updateGame(dt)
-	currentFrame = currentFrame + 1
+function updateGame()
 	if autoPlay then
 		nextStep()
 	end
