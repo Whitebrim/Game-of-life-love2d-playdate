@@ -22,6 +22,7 @@ end
 
 function checkCellNeighbours(x, y)
 	local aliveAmount = 0
+
 	for	i = -1, 1 do
 		for j = -1, 1 do
 			if (i ~= 0 or j ~= 0) and getCell(x + i, y + j) then
@@ -30,12 +31,11 @@ function checkCellNeighbours(x, y)
 		end
 	end
 
-	if aliveAmount == 2 then
-		return world:getPixel(x,y)
+	if aliveAmount == 2 and world:getPixel(x, y) == 1 then
+		return 1, 1, 1, 1
 	end
-
 	if aliveAmount == 3 then
-		return 1, 0, 0, 1
+		return 1, 1, 1, 1
 	else
 		return 0, 0, 0, 1
 	end
@@ -44,13 +44,23 @@ end
 function nextStep()
 	nextWorld:mapPixel(checkCellNeighbours)
 	image:replacePixels(nextWorld)
-	world, nextWorld = nextWorld, world
+	world = nextWorld
 end
 
-function fill(x, y)
-	if love.math.random() > threshold then
-		return 1, 0, 0, 1
+--[[function drawTable()
+	for x = 0, width - 1 do
+		for y = 0, height - 1 do
+			if (world[x][y]) then
+				love.graphics.points(x, y)
+			end
+		end
 	end
+end--]]
+
+function fill()
+	if love.math.random() > threshold then
+		return 1, 1, 1, 1
+	   end
 	   return 0, 0, 0, 1
 end
 
@@ -64,10 +74,12 @@ function loadGame()
 	nextWorld = world:clone()
 	image = love.graphics.newImage(world)
 	image:setFilter 'nearest'
+	currentFrame = 1
 	newWorld()
 end
 
 function updateGame(dt)
+	currentFrame = currentFrame + 1
 	if autoPlay then
 		nextStep()
 	end
@@ -92,7 +104,7 @@ function drawGame()
 	if clearScreen then
 		love.graphics.clear(BLACK)
 	end
-	love.graphics.draw(image, 0, 0, 0, 1)
+	love.graphics.draw(image, 0, 0, 0, 2, 2)
   	love.window.setTitle(love.timer.getFPS())
 	--drawTable()
 end
